@@ -23,8 +23,6 @@ namespace Typo3Console\CreateReferenceCommand\Command;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Helhum\Typo3Console\Core\Booting\RunLevel;
-use Helhum\Typo3Console\Core\ConsoleBootstrap;
 use Helhum\Typo3Console\Mvc\Controller\CommandController;
 use TYPO3\CMS\Extbase\Mvc\Cli\Command;
 use TYPO3\CMS\Extbase\Mvc\Exception\CommandException;
@@ -168,24 +166,14 @@ class CommandReferenceCommandController extends CommandController
     protected function buildCommandsIndex()
     {
         $availableCommands = $this->commandManager->getAvailableCommands();
-        /** @var RunLevel $runLevel */
-        $runLevel = ConsoleBootstrap::getInstance()->getEarlyInstance(\Helhum\Typo3Console\Core\Booting\RunLevel::class);
         foreach ($availableCommands as $command) {
             if ($command->isInternal()) {
                 continue;
             }
-
             $shortCommandIdentifier = $this->commandManager->getShortestIdentifierForCommand($command);
-
-            if ($runLevel->getMaximumAvailableRunLevel() === RunLevel::LEVEL_COMPILE && !$runLevel->isCommandAvailable($shortCommandIdentifier)) {
-                continue;
-            }
-
             $this->commands[$shortCommandIdentifier] = $command;
         }
-
         ksort($this->commands);
-
         return $this->commands;
     }
 }
