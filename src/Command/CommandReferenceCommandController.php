@@ -46,13 +46,17 @@ class CommandReferenceCommandController extends CommandController
         ]
     ];
 
+    private $skipCommands = [
+        'typo3_console:help:help',
+    ];
+
     /**
      * @var Command[]
      */
     protected $commands = [];
 
     /**
-     * @var \Helhum\Typo3Console\Mvc\Cli\CommandManager
+     * @var \TYPO3\CMS\Extbase\Mvc\Cli\CommandManager
      * @inject
      */
     protected $commandManager;
@@ -167,7 +171,7 @@ class CommandReferenceCommandController extends CommandController
     {
         $availableCommands = $this->commandManager->getAvailableCommands();
         foreach ($availableCommands as $command) {
-            if ($command->isInternal()) {
+            if ($command->isInternal() || in_array($command->getCommandIdentifier(), $this->skipCommands, true)) {
                 continue;
             }
             $shortCommandIdentifier = $this->commandManager->getShortestIdentifierForCommand($command);
