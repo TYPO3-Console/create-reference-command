@@ -23,6 +23,7 @@ namespace Typo3Console\CreateReferenceCommand\Command;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Helhum\Typo3Console\Core\Kernel;
 use Helhum\Typo3Console\Mvc\Controller\CommandController;
 use TYPO3\CMS\Extbase\Mvc\Cli\Command;
 use TYPO3\CMS\Extbase\Mvc\Exception\CommandException;
@@ -46,9 +47,7 @@ class CommandReferenceCommandController extends CommandController
         ]
     ];
 
-    private $skipCommands = [
-        'typo3_console:help:help',
-    ];
+    private $skipCommands = [];
 
     /**
      * @var Command[]
@@ -72,9 +71,15 @@ class CommandReferenceCommandController extends CommandController
 
     /**
      * Renders command reference documentation from source code.
+     *
+     * @param array $skipCommands
      */
-    public function renderCommand()
+    public function renderCommand(array $skipCommands = [])
     {
+        $this->skipCommands = $skipCommands;
+        if (class_exists(Kernel::class)) {
+            $this->skipCommands[] = 'typo3_console:help:help';
+        }
         $this->renderReference('typo3_console');
     }
 
