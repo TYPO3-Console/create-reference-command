@@ -8,10 +8,10 @@
 
 .. note::
 
-  This reference uses ``typo3cms`` as the command to invoke. If you are on
-  Windows, this will probably not work, there you need to use ``typo3cms.bat``
+  This reference uses ``typo3console`` as the command to invoke. If you are on
+  Windows, this will probably not work, there you need to use ``typo3console.bat``
   instead.
-  In Composer based installations, the ``typo3cms`` binary will be located
+  In Composer based installations, the ``typo3console`` binary will be located
   in the binary directory specified in the root composer.json (by default ``vendor/bin``)
 
 
