@@ -29,13 +29,19 @@ namespace Typo3Console\CreateReferenceCommand\ViewHelpers\Format;
  */
 class IndentViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
+    public function initializeArguments()
+    {
+        $this->registerArgument('indent', 'string', 'String used to indent', false, "\t");
+        $this->registerArgument('inline', 'boolean', 'If TRUE, the first line will not be indented', false, false);
+    }
+
     /**
-     * @param string $indent String used to indent
-     * @param bool $inline If TRUE, the first line will not be indented
      * @return string The formatted value
      */
-    public function render($indent = "\t", $inline = false)
+    public function render()
     {
+        $indent = $this->arguments['indent'];
+        $inline = $this->arguments['inline'];
         $string = $this->renderChildren();
         return ($inline === false ? $indent : '') . str_replace("\n", "\n" . $indent, $string);
     }

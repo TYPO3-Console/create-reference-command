@@ -42,7 +42,7 @@ class CommandReferenceCommandController extends CommandController
         'commandReferences' => [
             'typo3_console' => [
                 'title' => 'Command Reference',
-                'extensionKeys' => ['typo3_console', 'extensionmanager', 'extbase'],
+                'extensionKeys' => ['typo3_console'],
             ]
         ]
     ];
@@ -77,9 +77,6 @@ class CommandReferenceCommandController extends CommandController
     public function renderCommand(array $skipCommands = [])
     {
         $this->skipCommands = $skipCommands;
-        if (class_exists(Kernel::class)) {
-            $this->skipCommands[] = 'typo3_console:help:help';
-        }
         $this->renderReference('typo3_console');
     }
 
@@ -130,9 +127,13 @@ class CommandReferenceCommandController extends CommandController
                     $relatedCommands[$relatedCommandIdentifier] = '*Command not available*';
                 }
             }
+            $shortCommandIdentifier = $this->commandManager->getShortestIdentifierForCommand($command);
+            if ($shortCommandIdentifier === 'typo3_console:help:help') {
+                $shortCommandIdentifier = 'help';
+            }
 
             $allCommands[$command->getCommandIdentifier()] = [
-                'identifier' => $this->commandManager->getShortestIdentifierForCommand($command),
+                'identifier' => $shortCommandIdentifier,
                 'shortDescription' => $this->transformMarkup($command->getShortDescription()),
                 'description' => $this->transformMarkup($command->getDescription()),
                 'options' => $this->transformMarkup($optionDescriptions),
@@ -181,6 +182,9 @@ class CommandReferenceCommandController extends CommandController
                 continue;
             }
             $shortCommandIdentifier = $this->commandManager->getShortestIdentifierForCommand($command);
+            if ($shortCommandIdentifier === 'typo3_console:help:help') {
+                $shortCommandIdentifier = 'help';
+            }
             $this->commands[$shortCommandIdentifier] = $command;
         }
         ksort($this->commands);

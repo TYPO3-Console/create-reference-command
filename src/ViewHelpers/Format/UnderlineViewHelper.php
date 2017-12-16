@@ -29,12 +29,17 @@ namespace Typo3Console\CreateReferenceCommand\ViewHelpers\Format;
  */
 class UnderlineViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
+    public function initializeArguments()
+    {
+        $this->registerArgument('withCharacter', 'string', 'The padding string', false, '-');
+    }
+
     /**
-     * @param string $withCharacter The padding string
      * @return string The formatted value
      */
-    public function render($withCharacter = '-')
+    public function render()
     {
+        $withCharacter = $this->arguments['withCharacter'];
         $string = $this->renderChildren();
         return $string . chr(10) . str_repeat($withCharacter, strlen($string));
     }
