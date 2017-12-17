@@ -166,7 +166,7 @@ class CommandReferenceCommandController extends CommandController
         $output =  preg_replace('|\<warning>(((?!\</warning>).)*)\</warning>|', '**$1**', $output);
         $output =  preg_replace('|\<strike>(((?!\</strike>).)*)\</strike>|', '[$1]', $output);
         $output =  preg_replace('|\<code>(((?!\</code>).)*)\</code>|', '``$1``', $output);
-        $output =  preg_replace('|%command\.[^%]*%|', 'typo3console', $output);
+        $output =  preg_replace('|%command\.[^%]*%|', 'typo3cms', $output);
         return $output;
     }
 
