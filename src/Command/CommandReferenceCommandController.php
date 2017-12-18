@@ -24,8 +24,10 @@ namespace Typo3Console\CreateReferenceCommand\Command;
  *                                                                        */
 
 use Helhum\Typo3Console\Core\Kernel;
+use Helhum\Typo3Console\Mvc\Cli\Symfony\Application;
 use Helhum\Typo3Console\Mvc\Controller\CommandController;
 use TYPO3\CMS\Extbase\Mvc\Cli\Command;
+use TYPO3\CMS\Extbase\Mvc\Cli\CommandManager;
 use TYPO3\CMS\Extbase\Mvc\Exception\CommandException;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -55,10 +57,14 @@ class CommandReferenceCommandController extends CommandController
     protected $commands = [];
 
     /**
-     * @var \TYPO3\CMS\Extbase\Mvc\Cli\CommandManager
-     * @inject
+     * @var CommandManager
      */
     protected $commandManager;
+
+    public function injectCommandManager(CommandManager $commandManager)
+    {
+        $this->commandManager = $commandManager;
+    }
 
     /**
      * @param array $settings
@@ -146,6 +152,7 @@ class CommandReferenceCommandController extends CommandController
         $templatePathAndFilename = __DIR__ . '/../../Resources/Templates/CommandReferenceTemplate.txt';
         $standaloneView->setTemplatePathAndFilename($templatePathAndFilename);
         $standaloneView->assign('title', isset($referenceConfiguration['title']) ? $referenceConfiguration['title'] : $reference);
+        $standaloneView->assign('commandName', Application::COMMAND_NAME);
         $standaloneView->assign('allCommandsByPackageKey', ['typo3_console' => $allCommands]);
         $renderedOutputFile = getenv('TYPO3_PATH_COMPOSER_ROOT') . '/Documentation/CommandReference/Index.rst';
         file_put_contents($renderedOutputFile, $standaloneView->render());
@@ -166,7 +173,7 @@ class CommandReferenceCommandController extends CommandController
         $output =  preg_replace('|\<warning>(((?!\</warning>).)*)\</warning>|', '**$1**', $output);
         $output =  preg_replace('|\<strike>(((?!\</strike>).)*)\</strike>|', '[$1]', $output);
         $output =  preg_replace('|\<code>(((?!\</code>).)*)\</code>|', '``$1``', $output);
-        $output =  preg_replace('|%command\.[^%]*%|', 'typo3cms', $output);
+        $output =  preg_replace('|%command\.[^%]*%|', Application::COMMAND_NAME, $output);
         return $output;
     }
 
